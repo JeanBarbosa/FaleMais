@@ -47,11 +47,13 @@ Visualizar resultado:
 ## :information_source: How To Use
 
 ```bash
-# Install dependencies
-$ yarn install
 
-# Using yarn:
-$ yarn start
+# Clone repository:
+$ git clone https://github.com/JeanBarbosa/falemais.git && cd web
+
+# Install dependencies
+$ yarn install && yarn start
+
 ```
 
 ## tests:
