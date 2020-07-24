@@ -1,10 +1,10 @@
-const tariff = Object.freeze({
-    '1116': Symbol(1.90),
-    '1611': Symbol(2.90),
-    '1117': Symbol(1.70),
-    '1711': Symbol(2.70),
-    '1118': Symbol(0.90),
-    '1811': Symbol(1.90),
-});
+const tariff = new Map();
+
+tariff.set('1116', 1.90);
+tariff.set('1611', 2.90);
+tariff.set('1117', 1.70);
+tariff.set('1711', 2.70);
+tariff.set('1118', 0.90);
+tariff.set('1811', 1.90);
 
 export default tariff;

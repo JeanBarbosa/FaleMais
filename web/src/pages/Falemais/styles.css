@@ -27,10 +27,14 @@
 
 .calc-container .content section h1{
     margin: 0px 0 32px;
-    font-size: 32px;
+    font-size: 60px;
 }
 
-.calc-container .content section p {
+.calc-container .content section img{
+    margin: 0px 0 40px;
+}
+
+p {
     font-size: 18px;
     color: #737380;
     line-height: 32px;
@@ -71,11 +75,11 @@
 .slider {
     display: flex;
     flex-direction: column;
-    margin-left: 15px;
     margin: 15px;
 }
 
-.typography {
-    display: flex;
-    margin-top: 20px;
+.plan {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 32px;
 }

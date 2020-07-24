@@ -1,142 +1,156 @@
 import React, { useState} from 'react';
-import {useHistory} from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Alert from '@material-ui/lab/Alert';
 import Radio from '@material-ui/core/Radio';
-import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import citys from '../../services/PGCN';
+import marks from '../../services/marks';
+import tariff from '../../services/tariff';
+import plans  from '../../services/phoneplans';
 
 import './styles.css';
 import logoImg from '../../assets/falemais.png';
 
+export default function Falemais() {
 
-export default function Register() {
+  const [phoneplan, setPhoneplan] = useState('FM30');
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+  const [minutes, setMinutes] = useState(30);
+  const [promotion, setPromotion ] = useState(0);
+  const [withoutPromotion, setWithoutPromotion] = useState(0);
+  const [error, setError] = useState(false);
 
-  const marks = [
-    {
-      value: 1,
-      label: '1 min',
-    },
-    {
-      value: 20,
-      label: '20 min',
-    },
-    {
-      value: 40,
-      label: '30 min',  
-    },
-    {
-      value: 100,
-      label: '+100',
-    },
-  ];
+  function getTax() {
 
-  const [selectedValue, setSelectedValue] = useState('a');
+    if(from && to) {
+      const ddds = `${from.ddd}${to.ddd}`;
+      return tariff.get(ddds);
+    }
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value); 
-  };
-
-  async function hadleRegister(e) {
-
+    return undefined;
   }
 
-  function valuetext(value) {
-    return `${value} min`;
+  function isValidRegion() {
+
+    if(from && to) {
+  
+      if(getTax()) {
+        setError(false);
+        return true;
+      }
+    }
+
+    setError(true);
+    return false;
+  }
+
+  function hadleSubmit(e) {
+
+    setPromotion(0);
+    setWithoutPromotion(0);
+    e.preventDefault();
+
+    const plan = plans.find((plan) => plan.codigo ===  phoneplan);
+   
+    if(isValidRegion() === false) {
+      return;
+    }
+
+    const tax = getTax();
+
+    if(tax) {
+      if(minutes > plan.min){
+        const total = (minutes - plan.min) * (0.10 * tax + tax);
+        setPromotion(total);
+      }
+
+      setWithoutPromotion(minutes * tax);
+    }
+
   }
 
   return (
     <div className="calc-container">
-        <div className="content">
+      <div className="content">
         
-            <form onSubmit={hadleRegister}>
+        <form onSubmit={hadleSubmit} >
 
-            <div className="input-group">
+          <div className="input-group">
 
             <Autocomplete
               id="combo-box-demo"
+              noOptionsText="Não encontrado"
+              onChange={(event, value) => {
+                setError(false);
+                setFrom(value);
+              }}
               options={citys}
-              getOptionLabel={(city) => city.name}
+              getOptionLabel={(city) => `(${city.ddd}) ${city.name}` }
               style={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Ligação de:" variant="outlined" />}
             />
 
             <Autocomplete
               id="combo-box-demo2"
+              noOptionsText="Não encontrado"
+              onChange={(event, value) => {
+                setError(false);
+                setTo(value);
+              }}
               options={citys}
-              getOptionLabel={(city) => city.name}
+              getOptionLabel={(city) => `(${city.ddd}) ${city.name}` }
               style={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Para:" variant="outlined" />}
             />
-
           </div>
+
+          {
+            error ? <Alert severity="error">A promoção FaleMais não cobre as regiões informadas!</Alert> : ''
+
+          }
           
           <div className="min">
-            <Typography id="discrete-slider-small-steps" gutterBottom>
+            <p>
               Minutos
-            </Typography>
+            </p>
 
             <div className="slider">
               <Slider
-                defaultValue={1}
-                getAriaValueText={valuetext}
+                defaultValue={minutes}
+                value={minutes}
+                onChange={ (event, value) => setMinutes(value)}
                 aria-labelledby="discrete-slider-small-steps"
                 step={1}
                 marks={marks}
                 min={1}
-                max={100}
-                valueLabelDisplay="auto"
+                max={120}
+                valueLabelDisplay="on"
               />
-
             </div>
           </div>
 
           <div className="input-group">
 
-              <div className="card">
-                <Radio
-                    checked={selectedValue === 'a'}
-                    onChange={handleChange}
-                    value="a"
-                    name="radio-button-demo"
-                    inputProps={{ 'aria-label': 'A' }}
-                  /> 
+            {
+              plans.map((plan) => (
+                <div className="card" key={plan.id}>
+                  <Radio
+                      checked={phoneplan === plan.codigo}
+                      onChange={(event) => setPhoneplan(event.target.value)}
+                      value={plan.codigo}
+                      name="radio-button-demo"
+                      inputProps={{ 'aria-label': `${plan.codigo}`}}
+                    /> 
 
-                  <div>
-                    FaleMais 20
-                  </div>
-                
+                    <div className="plan">
+                      { plan.title }
+                    </div>
               </div>
-            
-              <div className="card">
-                <Radio
-                  checked={selectedValue === 'b'}
-                  onChange={handleChange}
-                  value="b"
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'B' }}
-                />
-
-                  <div>
-                    FaleMais 60
-                  </div>
-                </div>
-
-                <div className="card">
-                <Radio
-                  checked={selectedValue === 'c'}
-                  onChange={handleChange}
-                  value="c"
-                  name="radio-button-demo"
-                  inputProps={{ 'aria-label': 'C' }}
-                />
-                  <div>
-                    FaleMais 120
-                  </div>
-                </div>
-
-              </div>
+              ))
+            }
+            </div>
 
               <button className="button" type="submit"> Custo da ligação </button>
             </form>
@@ -145,11 +159,14 @@ export default function Register() {
                 <img src={logoImg} alt="Logo" />
 
                 <p>Com FaleMais você gastaria: </p>
-                <h1>{Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(6000)}</h1>
+                <h1>
+                  {Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(promotion)}
+                </h1>
                
-                <p>Sem FaleMais </p>
-                <h1>{Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(100)}</h1>
-                
+                <p> Sem FaleMais </p>
+                <h1>
+                  {Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(withoutPromotion)}
+                </h1>
             </section>
         </div>
     </div>
