@@ -107,7 +107,7 @@ export default function Falemais() {
           </div>
 
           {
-            error ? <Alert severity="error">A promoção FaleMais não cobre as regiões informadas!</Alert> : ''
+            error ? <Alert data-testid="falemais-form" severity="error">A promoção FaleMais não cobre as regiões informadas!</Alert> : ''
 
           }
           
