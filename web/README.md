@@ -1,4 +1,4 @@
 # FaleMais 
 <h1 align="center" >  
-  <img src="web/readme-assets/screenshot.png" width="600"/>
+  <img src="https://github.com/JeanBarbosa/falemais/blob/master/web/readme-assets/screenshot.png" width="600"/>
 </h1>
