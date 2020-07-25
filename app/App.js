@@ -1,21 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
+import 'intl';
+import 'intl/locale-data/jsonp/pt-BR';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
-export default function App() {
+import Falemais from './src/pages/Falemais';
+
+const app = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar  style="auto" />
+      <Falemais />
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default app;
