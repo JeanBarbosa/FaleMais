@@ -4,11 +4,13 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Slider
+  Slider,
+  Alert
 } from 'react-native';
 import Modal from '../../components/Modal';
 
 import plans from '../../services/phoneplans';
+import tariff from '../../services/tariff';
 
 import styles from './styles';
 import logoImg from '../../assets/logo.png';
@@ -16,20 +18,91 @@ import logoImg from '../../assets/logo.png';
 export default function Falemais() {
 
   const [minutes, setMinutes ] = useState(30);
-  const [phoneplan, setPhoneplan ] = useState({});
+  const [phoneplan, setPhoneplan ] = useState(plans[0]);
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+  const [promotion, setPromotion ] = useState(0);
+  const [withoutPromotion, setWithoutPromotion] = useState(0);
+
+  function getTax() {
+
+    if(from && to) {
+      const ddds = `${from.ddd}${to.ddd}`;
+      return tariff.get(ddds);
+    }
+
+    return undefined;
+  }
+
+  function isValidRegion() {
+
+    if(from && to) {
+  
+      if(getTax()) {
+        return true;
+      }
+
+      Alert.alert(
+        "Oooopss!!",
+        "A promoção FaleMais não cobre as regiões informadas!",
+        [ 
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+
+    }
+
+    return false;
+  }
+
+  function updateValues() {
+
+    console.log('entrei');
+    console.log(to);
+    console.log(from);
+    console.log(phoneplan);
+    console.log(minutes);
+    
+    if(isValidRegion() === false) {
+      return;
+    }
+
+    setPromotion(0);
+    setWithoutPromotion(0);
+
+    const plan = plans.find((plan) => plan.codigo ===  phoneplan.codigo);
+   
+    const tax = getTax();
+
+    console.log(tax);
+    console.log(plan);
+    if(tax) {
+      if(minutes > plan.min){
+        const total = (minutes - plan.min) * (0.10 * tax + tax);
+        setPromotion(total);
+      }
+
+      setWithoutPromotion(minutes * tax);
+    }
+
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={logoImg} />
 
         <Text style={styles.headerTextBold}>
-          {Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(107)}
+          {Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(promotion)}
         </Text>
 
         <Text style={styles.description}> 
-          sem o plano:
-          {Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(50)}
+          {` sem o plano: ${Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(withoutPromotion)}`}
         </Text>
       </View>
 
@@ -39,11 +112,11 @@ export default function Falemais() {
             plans.map((plan) => (
               <TouchableOpacity
                 key={plan.codigo}
-                style={{ ...styles.planButton, backgroundColor: phoneplan.id === plan.id ? 'gray': 'red' }}
+                style={{ ...styles.planButton, backgroundColor: phoneplan.id === plan.id ? '#808080': '#d3d3d3' }}
                 onPress={() => {
                   setPhoneplan(plan);
                 }}>
-                <Text style={styles.planButtonText}>
+                <Text style={{ ...styles.planButtonText, fontWeight: phoneplan.id === plan.id ? 'bold': 'normal' }}>
                   {plan.title}
                 </Text>
               </TouchableOpacity>
@@ -62,16 +135,36 @@ export default function Falemais() {
           maximumTractTintColor="#0e0872"
           step={1}
           value={30}
-          onValueChange={(value) => setMinutes(value)}
+          onValueChange={(value) => {
+            setMinutes(value);
+          }}
           style={styles.slider}
           thumbTintColor="#0e0872"
         />
 
-          <Text> Ligação de: </Text>
-          <Modal />
+          <View style={{marginTop: 10, marginBottom: 40}}>
+            <Text
+              style={{fontWeight: 'bold', fontSize: 18}}>
+                Ligação de:
+            </Text>
+            <Modal onChange={setFrom} />
 
-          <Text> para: </Text>
-          <Modal />
+            <Text
+              style={{fontWeight: 'bold', fontSize: 18, marginTop: 8}}>
+                para:
+            </Text>
+            <Modal onChange={setTo} />
+          </View>
+
+          <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => updateValues()}
+            >
+              <Text style={styles.textStyle}>
+                Custo da Ligação
+              </Text>
+          </TouchableOpacity>
+          
       </View>
     </View>
   );

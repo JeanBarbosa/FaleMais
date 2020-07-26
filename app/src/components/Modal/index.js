@@ -11,7 +11,7 @@ import {
 import citys from '../../services/citys';
 import styles from './styles';
 
-const App = () => {
+const App = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selected, setSelected] = useState('-- selecione a cidade --');
 
@@ -42,6 +42,7 @@ const App = () => {
                 <TouchableOpacity
                 style={{ ...styles.openButton, backgroundColor: "#fff",  }}
                 onPress={() => {
+                  props.onChange(item);
                   setSelected(item.name);
                   setModalVisible(!modalVisible);
                 }}
@@ -56,7 +57,7 @@ const App = () => {
       </Modal>
 
       <TouchableOpacity
-        style={styles.openButton}
+        style={{ ...styles.openButton, backgroundColor: '#dcdcdc' }}
         onPress={() => {
           setModalVisible(true);
         }}

@@ -10,7 +10,7 @@ export default StyleSheet.create({
     header: {
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#0e0872',
+        backgroundColor: '#219bd3',
     },
 
     headerText: {
@@ -21,7 +21,7 @@ export default StyleSheet.create({
     headerTextBold: {
         fontWeight: 'bold',
         color: '#fff',
-        fontSize: 56,
+        fontSize: 60,
         marginBottom: 16,
         marginTop: 40,
     },
@@ -29,7 +29,7 @@ export default StyleSheet.create({
     description: {
         fontSize: 16,
         lineHeight: 24,
-        color: '#fff'
+        color: '#000'
     },
 
     formList: {
@@ -70,14 +70,28 @@ export default StyleSheet.create({
 
     plans: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 24
     },
 
     planButton: {
         backgroundColor: "#F194FF",
+        padding: 20,
+    },
+
+    textStyle:{
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff'
+    },
+
+    buttonStyle: {
+        backgroundColor: "#0e0872",
+        padding: 15,
+        marginLeft: 5,
+        marginRight: 5,
         borderRadius: 20,
-        padding: 10,
+        alignItems: "center",
     }
 });
