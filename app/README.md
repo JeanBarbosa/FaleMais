@@ -1,6 +1,6 @@
 <h1 align="center" > 
 <a target="__blank" href="https://heuristic-edison-aca671.netlify.app/"> 
-  <img src="https://github.com/JeanBarbosa/falemais/blob/master/web/readme-assets/screenshot.png" width="600"/>
+  <img src="https://github.com/JeanBarbosa/falemais/blob/master/app/readme-assets/screenshot.png" width="600"/>
   </a>
 </h1>
 
