@@ -46,11 +46,6 @@ export default function Falemais() {
         "Oooopss!!",
         "A promoção FaleMais não cobre as regiões informadas!",
         [ 
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ],
         { cancelable: false }
@@ -63,12 +58,6 @@ export default function Falemais() {
 
   function updateValues() {
 
-    console.log('entrei');
-    console.log(to);
-    console.log(from);
-    console.log(phoneplan);
-    console.log(minutes);
-    
     if(isValidRegion() === false) {
       return;
     }
@@ -80,8 +69,6 @@ export default function Falemais() {
    
     const tax = getTax();
 
-    console.log(tax);
-    console.log(plan);
     if(tax) {
       if(minutes > plan.min){
         const total = (minutes - plan.min) * (0.10 * tax + tax);
